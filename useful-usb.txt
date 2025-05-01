@@ -1,66 +1,124 @@
-📂 / This example uses Debian 11 Bullseye, you're welcome to try out other distributions as well.
-├── 💻 VT2 (Ctrl+Alt+F2)
-│   └── 👤 Login as chronos/root
-│       └── 💾 /media/removable/USBDRIVE
-│           ├── 📁 crouton
-│           │   ├── 🗂️ chroots
-│           │   │   └── 🐧 bullseye
-│           │   │       ├── 📄 rootfs
-│           │   │       └── 📄 other-chroot-files
-│           │   └── ⚙️ enter-chroot
-│           └── 🛠️ (optional: remount exec)
-│
-└── 📝 Commands
-    ├── cd /media/removable/USBDRIVE/crouton/chroots/bullseye
-    ├── sudo mount -o remount,exec /media/removable/USBDRIVE
-    └── sudo sh /media/removable/USBDRIVE/crouton/enter-chroot -c /media/removable/USBDRIVE/crouton/chroots/bullseye
-
 1️⃣ Upgrading Packages in the Chroot (CLI Only)
-text
 📂 /
-└── 🐧 Inside chroot (after enter-chroot)
-    ├── 🔄 Update package lists
-    │   └── sudo apt update
-    ├── ⬆️ Upgrade all packages
-    │   └── sudo apt upgrade
-    ├── 🧹 Remove unused packages
-    │   └── sudo apt autoremove
-    └── 📝 Full upgrade (optional)
-        └── sudo apt full-upgrade
+└── 🐧 Inside chroot (after entering enter-chroot)
+├── 🔄 Update package lists:
+│ └── sudo apt update
+├── ⬆️ Upgrade all packages:
+│ └── sudo apt upgrade
+├── 🧹 Remove unused packages:
+│ └── sudo apt autoremove
+└── 📝 Full upgrade (optional):
+└── sudo apt full-upgrade
 
 2️⃣ Copying Files Between ChromeOS and Chroot
-text
 📂 /
 ├── 💻 ChromeOS shell (VT2)
-│   ├── 📁 /home/chronos/user/Downloads
-│   └── 📁 /media/removable/USBDRIVE/crouton/chroots/bullseye/home/<youruser>
-│
+│ ├── 📁 /home/chronos/user/Downloads
+│ └── 📁 /media/removable/USBDRIVE/crouton/chroots/bullseye/home/<youruser>
 └── 📝 Commands
-    ├── 📤 Copy from ChromeOS to chroot:
-    │   └── sudo cp /home/chronos/user/Downloads/file.txt /media/removable/USBDRIVE/crouton/chroots/bullseye/home/<youruser>/
-    └── 📥 Copy from chroot to ChromeOS:
-        └── sudo cp /media/removable/USBDRIVE/crouton/chroots/bullseye/home/<youruser>/file.txt /home/chronos/user/Downloads/
+├── 📤 Copy from ChromeOS to chroot:
+│ └── sudo cp /home/chronos/user/Downloads/file.txt /media/removable/USBDRIVE/crouton/chroots/bullseye/home/<youruser>/
+└── 📥 Copy from chroot to ChromeOS:
+└── sudo cp /media/removable/USBDRIVE/crouton/chroots/bullseye/home/<youruser>/file.txt /home/chronos/user/Downloads/
 
 3️⃣ Adding a New User to Your Chroot
-text
 📂 /
-└── 🐧 Inside chroot (after enter-chroot)
-    ├── 👤 Add new user
-    │   └── sudo adduser newusername
-    ├── 🔑 Set password
-    │   └── sudo passwd newusername
-    └── 🧑‍🤝‍🧑 Add to sudo group (optional)
-        └── sudo usermod -aG sudo newusername
+└── 🐧 Inside chroot (after entering enter-chroot)
+├── 👤 Add new user:
+│ └── sudo adduser newusername
+├── 🔑 Set password:
+│ └── sudo passwd newusername
+└── 🧑‍🤝‍🧑 Add to sudo group (optional):
+└── sudo usermod -aG sudo newusername
 
 4️⃣ Backing Up Your Chroot to Another USB or Location
-text
 📂 /
 ├── 💻 ChromeOS shell (VT2)
-│   ├── 💾 /media/removable/USBDRIVE/crouton/chroots/bullseye
-│   └── 💾 /media/removable/BACKUPDRIVE/
-│
+│ ├── 💾 /media/removable/USBDRIVE/crouton/chroots/bullseye
+│ └── 💾 /media/removable/BACKUPDRIVE/
 └── 📝 Commands
-    ├── 🗜️ Create compressed backup:
-    │   └── sudo tar czvf /media/removable/BACKUPDRIVE/bullseye-backup.tar.gz -C /media/removable/USBDRIVE/crouton/chroots bullseye
-    └── 📦 Extract backup (restore):
-        └── sudo tar xzvf /media/removable/BACKUPDRIVE/bullseye-backup.tar.gz -C /media/removable/USBDRIVE/crouton/chroots
+├── 🗜️ Create compressed backup:
+│ └── sudo tar czvf /media/removable/BACKUPDRIVE/bullseye-backup.tar.gz -C /media/removable/USBDRIVE/crouton/chroots bullseye
+└── 📦 Extract backup (restore):
+└── sudo tar xzvf /media/removable/BACKUPDRIVE/bullseye-backup.tar.gz -C /media/removable/USBDRIVE/crouton/chroots
+
+5️⃣ Automated Full Chroot Backup with Date Stamping and Pruning Old Backups
+📂 /
+├── 💻 VT2 (Ctrl+Alt+F2)
+│ └── 👤 Login as chronos/root
+│ └── 💾 /media/removable/USBDRIVE
+│ ├── 📁 /crouton/chroots/bullseye
+│ └── 💾 /media/removable/BACKUPDRIVE/
+└── 📝 Commands
+├── 📅 Generate timestamp:
+│ └── export DATE=$(date +%Y-%m-%d)
+├── 🗜️ Create backup:
+│ └── sudo tar czvf /media/removable/BACKUPDRIVE/bullseye-backup-$DATE.tar.gz -C /media/removable/USBDRIVE/crouton/chroots bullseye
+├── 🧹 Prune old backups (keep last 5):
+│ └── ls -tp /media/removable/BACKUPDRIVE/bullseye-backup-*.tar.gz | grep -v '/$' | tail -n +6 | xargs -r rm --
+└── 📦 Restore backup (when needed):
+└── sudo tar xzvf /media/removable/BACKUPDRIVE/bullseye-backup-YYYY-MM-DD.tar.gz -C /media/removable/USBDRIVE/crouton/chroots
+
+6️⃣ Automated Package List Export/Import for Chroot Rebuild
+📂 /
+└── 🐧 Inside chroot (after entering enter-chroot)
+├── 📤 Export installed package list:
+│ └── dpkg --get-selections > ~/package-list.txt
+├── 📥 Import package list on new chroot:
+│ ├── sudo dpkg --set-selections < ~/package-list.txt
+│ └── sudo apt-get dselect-upgrade
+└── 📝 (Optional) Backup package list to ChromeOS:
+└── sudo cp ~/package-list.txt /media/removable/USBDRIVE/
+
+7️⃣ Chroot Filesystem Check and Repair (fsck) from ChromeOS
+📂 /
+├── 💻 VT2 (Ctrl+Alt+F2)
+│ └── 👤 Login as chronos/root
+│ └── 💾 /media/removable/USBDRIVE/crouton/chroots/bullseye
+└── 📝 Commands
+├── 🔒 Unmount chroot (if mounted):
+│ └── sudo umount /media/removable/USBDRIVE/crouton/chroots/bullseye
+├── 🔍 Identify device:
+│ └── lsblk
+├── 🛠️ Run fsck:
+│ └── sudo fsck.ext4 /dev/sdXn
+└── 🚀 Remount after check:
+└── sudo mount /dev/sdXn /media/removable/USBDRIVE
+
+8️⃣ Mounting and Binding ChromeOS Downloads Folder in Chroot for Seamless File Access
+📂 /
+├── 💻 VT2 (Ctrl+Alt+F2)
+│ └── 👤 Login as chronos/root
+│ └── 💾 /home/chronos/user/Downloads
+└── 📝 Commands
+├── 🐧 Inside chroot (after entering enter-chroot)
+│ ├── 📁 Create mountpoint:
+│ │ └── mkdir -p ~/chromeos-downloads
+│ └── 🔗 Bind mount Downloads:
+│ └── sudo mount --bind /home/chronos/user/Downloads ~/chromeos-downloads
+└── 📂 Now access ChromeOS Downloads at ~/chromeos-downloads in chroot!
+
+9️⃣ Automated Chroot Integrity Check and Log Export
+📂 /
+└── 🐧 Inside chroot (after entering enter-chroot)
+├── 📝 Check for broken packages:
+│ └── sudo apt-get check
+├── 📝 Check for missing dependencies:
+│ └── sudo apt-get -f install
+├── 📝 Export dpkg logs:
+│ └── sudo cp /var/log/dpkg.log ~/dpkg.log
+└── 📝 Copy log to ChromeOS:
+└── sudo cp ~/dpkg.log /media/removable/USBDRIVE/
+
+10️⃣ Automated User Account Audit and Sudoers Check
+📂 /
+└── 🐧 Inside chroot (after entering enter-chroot)
+├── 📝 List all users:
+│ └── cut -d: -f1 /etc/passwd
+├── 📝 List all sudoers:
+│ └── getent group sudo
+├── 📝 Export to file:
+│ └── (cut -d: -f1 /etc/passwd; echo "Sudoers:"; getent group sudo) > ~/user-audit.txt
+└── 📤 Copy audit to ChromeOS:
+└── sudo cp ~/user-audit.txt /media/removable/USBDRIVE/
+
