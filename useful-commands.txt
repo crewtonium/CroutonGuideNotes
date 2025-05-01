@@ -1,4 +1,4 @@
-📂 /
+📂 / This example uses Debian 11 Bullseye, you're welcome to try out other distributions as well.
 ├── 💻 VT2 (Ctrl+Alt+F2)
 │   └── 👤 Login as chronos/root
 │       └── 💾 /media/removable/USBDRIVE
