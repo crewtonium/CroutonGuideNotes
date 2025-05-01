@@ -1,8 +1,4 @@
 # CroutonGuideNotes
-Commands you can finally stop asking
-for on forums. 
-
-# CroutonGuideNotes
 
 Welcome to **CroutonGuideNotes**! 🥗
 
